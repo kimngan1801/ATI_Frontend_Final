@@ -1,0 +1,679 @@
+---
+title: Home
+layout: dashboard
+footer: false
+hideSidebar: true
+---
+<div class="px-0 pt-0">
+  <!-- Apify embed container: sits below navbar and to the right of the sidebar via the dashboard layout -->
+  <div class="w-full min-h-[calc(100vh-4rem)] bg-white dark:bg-gray-900" style="min-height: calc(100vh - 4rem);">
+    <div class="relative w-full h-full">
+      <!-- New Tailwind-based landing page -->
+      <div class="px-6 pt-6 pb-12">
+        <!-- Hero (TikTok-style) -->
+        <section class="relative overflow-hidden rounded-3xl bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 tiktok-hero">
+          <style>
+            /* Scoped to .tiktok-hero to avoid leaking */
+            .tiktok-hero .hero-right { height: 420px; }
+            .tiktok-hero .mock-window {
+              position: absolute; inset: 0.75rem 1.5rem auto 1.5rem; top: 0; height: 220px;
+              border-radius: 16px; border: 1px solid rgba(148,163,184,.35);
+              background: linear-gradient(180deg, rgba(148,163,184,.15), transparent 60%), #f9fafb;
+            }
+            .dark .tiktok-hero .mock-window { background: linear-gradient(180deg, rgba(148,163,184,.08), transparent 60%), #111827; border-color: #374151; }
+            .tiktok-hero .dots { display: flex; gap: 8px; padding: 10px 14px; }
+            .tiktok-hero .dot { width: 8px; height: 8px; border-radius: 9999px; }
+            .tiktok-hero .grid-ghost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 0 16px 16px; }
+            .tiktok-hero .ghost { height: 90px; border-radius: 12px; background: rgba(148,163,184,.25); }
+            .dark .tiktok-hero .ghost { background: rgba(55,65,81,.6); }
+
+            /* Gradient border glow for Videos card */
+            .tiktok-hero .card-videos { position: absolute; left: 1rem; bottom: 1.25rem; width: 340px; max-width: calc(100% - 7rem); border-radius: 16px; background: #fff; box-shadow: 0 10px 30px rgba(17,24,39,.15); }
+            .dark .tiktok-hero .card-videos { background: #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+            .tiktok-hero .card-videos::before { content: ""; position: absolute; inset: -2px; border-radius: 18px; z-index: -1; background: linear-gradient(135deg, #fb7185, #22d3ee); filter: blur(0.5px); }
+            .tiktok-hero .video-thumb { height: 116px; border-radius: 10px; background: #f3f4f6; }
+            .dark .tiktok-hero .video-thumb { background: #374151; }
+
+            /* Popular topic card */
+            .tiktok-hero .card-topic { position: absolute; right: 1.5rem; bottom: 1rem; width: 240px; border-radius: 16px; background: #fff; border: 1px solid rgba(148,163,184,.35); box-shadow: 0 10px 24px rgba(17,24,39,.12); }
+            .dark .tiktok-hero .card-topic { background: #111827; border-color: #374151; box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+
+            /* Fan growth badge */
+            .tiktok-hero .fan-badge { position: absolute; right: 2.25rem; top: 0.75rem; border-radius: 12px; background: #fff; border: 1px solid rgba(148,163,184,.35); padding: 8px 12px; box-shadow: 0 6px 16px rgba(17,24,39,.12); display: inline-flex; gap: 8px; align-items: center; }
+            .dark .tiktok-hero .fan-badge { background: #1f2937; border-color: #374151; }
+
+            /* Simple animation utilities */
+            .tiktok-hero .anim { opacity: 0; }
+            @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes fadeInDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-24px) rotate(-2deg); } to { opacity: 1; transform: translateX(0) rotate(0); } }
+            @keyframes fadeInRight { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+            .tiktok-hero .fade-up { animation: fadeInUp .6s cubic-bezier(.2,.7,.2,1) forwards; }
+            .tiktok-hero .fade-down { animation: fadeInDown .6s cubic-bezier(.2,.7,.2,1) forwards; }
+            .tiktok-hero .fade-left { animation: fadeInLeft .7s cubic-bezier(.2,.7,.2,1) forwards; }
+            .tiktok-hero .fade-right { animation: fadeInRight .7s cubic-bezier(.2,.7,.2,1) forwards; }
+            .tiktok-hero .d0 { animation-delay: .05s; }
+            .tiktok-hero .d1 { animation-delay: .25s; }
+            .tiktok-hero .d2 { animation-delay: .45s; }
+            .tiktok-hero .d3 { animation-delay: .65s; }
+          </style>
+
+          <!-- VISIBILITY + POP: ensure floating cards are visible on white hero and stand out -->
+          <style>
+            /* Allow entrance animations to play (start hidden) */
+            .tiktok-hero .anim { opacity: 0; }
+            /* Stronger, clearer shadows and slightly firmer border for contrast on white */
+            .tiktok-hero .card-videos,
+            .tiktok-hero .card-topic,
+            .tiktok-hero .fan-badge {
+              border-color: #d1d5db !important; /* gray-300 */
+              box-shadow: 0 18px 50px rgba(17,24,39,0.18), 0 6px 16px rgba(17,24,39,0.08) !important;
+            }
+            /* Tweak individual cards for balance */
+            .tiktok-hero .card-topic { box-shadow: 0 16px 44px rgba(17,24,39,0.16), 0 6px 14px rgba(17,24,39,0.08) !important; }
+            .tiktok-hero .fan-badge { box-shadow: 0 12px 30px rgba(17,24,39,0.16) !important; }
+          </style>
+
+          <!-- Landing mock: clean light placeholders, gradient video card, floating layers -->
+          <style>
+            /* Browser frame */
+            .tiktok-hero .mock-window {
+              position: absolute; inset: 1rem 1.5rem auto 1.5rem; top: 0; height: 240px;
+              border-radius: 18px; border: 1px solid #e5e7eb; background: #fff;
+              box-shadow: 0 8px 24px rgba(17,24,39,.06);
+            }
+            .tiktok-hero .mock-window::before{ content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none; box-shadow: inset 0 0 0 1px rgba(17,24,39,.04); }
+            .tiktok-hero .dots { display:flex; gap:8px; padding:10px 14px }
+            .tiktok-hero .dot{ width:8px; height:8px; border-radius:9999px }
+            .tiktok-hero .mw-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:0 16px 16px }
+            .tiktok-hero .mw-card{ background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:12px; box-shadow: 0 4px 14px rgba(17,24,39,.06) }
+            .tiktok-hero .mw-card::before{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow: inset 0 0 0 1px rgba(17,24,39,.04) }
+            .tiktok-hero .sk-img{ height:68px; border-radius:10px; background:#f3f4f6; display:flex; align-items:center; justify-content:center }
+            .tiktok-hero .sk-line{ height:8px; border-radius:6px; background:#e5e7eb }
+
+            /* Fan growth badge */
+            .tiktok-hero .fan-badge{ position:absolute; right:2rem; top:.75rem; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; box-shadow:0 8px 20px rgba(17,24,39,.08); display:inline-flex; gap:8px; align-items:center; z-index:30 }
+
+            /* Videos card with gradient border like TikTok */
+            .tiktok-hero .card-videos{ position:absolute; left:1rem; bottom:1.25rem; width:360px; max-width:calc(100% - 7rem); border-radius:20px; background:#fff; box-shadow:0 12px 34px rgba(17,24,39,.12); z-index:20; border:1px solid #e5e7eb }
+            .tiktok-hero .card-videos::before{ content:""; position:absolute; inset:-2px; border-radius:22px; background:linear-gradient(135deg,#ec4899 0%,#06b6d4 100%); z-index:-1 }
+            .tiktok-hero .card-videos::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow: inset 0 0 0 1px rgba(17,24,39,.04) }
+            .tiktok-hero .gradient-text{ background:linear-gradient(90deg,#06b6d4,#ec4899); -webkit-background-clip:text; background-clip:text; color:transparent }
+            .tiktok-hero .video-thumb{ height:110px; border-radius:12px; background:#f3f4f6; display:flex; align-items:center; justify-content:center }
+            .tiktok-hero .dots-pager{ display:flex; gap:6px }
+            .tiktok-hero .dot-small{ width:6px; height:6px; border-radius:9999px; background:#e5e7eb }
+
+            /* Popular topic */
+            .tiktok-hero .card-topic{ position:absolute; right:1.25rem; bottom:1rem; width:260px; background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow:0 10px 28px rgba(17,24,39,.10); z-index:25 }
+            .tiktok-hero .card-topic::before{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow: inset 0 0 0 1px rgba(17,24,39,.04) }
+          </style>
+          <style>
+          /* Enhancements and animation trigger-only-on-view overrides */
+          .tiktok-hero .card-videos { z-index: 10; transform: rotate(-1.5deg); }
+          .tiktok-hero .card-topic { z-index: 20; transform: rotate(0.5deg); }
+          .tiktok-hero .fan-badge { z-index: 30; }
+          /* Corner glow like screenshot */
+          .tiktok-hero .card-videos::after {
+            content: ""; position: absolute; inset: -14px; border-radius: 22px; z-index: -1;
+            background: radial-gradient(closest-side at 8% 90%, rgba(251,113,133,.35), transparent 60%),
+                        radial-gradient(closest-side at 95% 0%, rgba(34,211,238,.35), transparent 55%);
+            filter: blur(6px);
+          }
+          /* Play animations only when section enters viewport */
+          .tiktok-hero .anim { opacity: 0; }
+          .tiktok-hero.play .fade-up { animation: fadeInUp .6s cubic-bezier(.2,.7,.2,1) forwards; }
+          .tiktok-hero.play .fade-down { animation: fadeInDown .6s cubic-bezier(.2,.7,.2,1) forwards; }
+          .tiktok-hero.play .fade-left { animation: fadeInLeft .7s cubic-bezier(.2,.7,.2,1) forwards; }
+          .tiktok-hero.play .fade-right { animation: fadeInRight .7s cubic-bezier(.2,.7,.2,1) forwards; }
+        </style>
+
+          <!-- NEW: gradient background for the hero container + force white cards regardless of dark mode -->
+          <style>
+            /* Multi-stop gradient tuned lighter, warmer (more orange) */
+            .tiktok-hero {
+              background:
+                radial-gradient(520px 300px at 95% -10%, rgba(253,224,71,0.35), rgba(253,224,71,0) 60%),
+                radial-gradient(900px 520px at 88% 20%, rgba(251,146,60,0.30), rgba(251,146,60,0) 70%),
+                radial-gradient(1200px 600px at 70% 110%, rgba(245,158,11,0.18), rgba(245,158,11,0) 60%),
+                radial-gradient(1000px 560px at 8% 100%, rgba(139,92,246,0.18), rgba(139,92,246,0) 60%),
+                linear-gradient(120deg, #a78bfa 0%, #f59e0b 40%, #fb923c 65%, #fbbf24 85%, #fde68a 100%);
+              border-color: transparent;
+            }
+            .dark .tiktok-hero {
+              background:
+                radial-gradient(520px 300px at 95% -10%, rgba(253,224,71,0.35), rgba(253,224,71,0) 60%),
+                radial-gradient(900px 520px at 88% 20%, rgba(251,146,60,0.30), rgba(251,146,60,0) 70%),
+                radial-gradient(1200px 600px at 70% 110%, rgba(245,158,11,0.18), rgba(245,158,11,0) 60%),
+                radial-gradient(1000px 560px at 8% 100%, rgba(139,92,246,0.18), rgba(139,92,246,0) 60%),
+                linear-gradient(120deg, #a78bfa 0%, #f59e0b 40%, #fb923c 65%, #fbbf24 85%, #fde68a 100%);
+              border-color: transparent;
+            }
+
+            /* Force right-side cards to white backgrounds and dark content in both modes */
+            .tiktok-hero .card-videos,
+            .tiktok-hero .card-topic,
+            .tiktok-hero .fan-badge {
+              background: #ffffff !important;
+              border-color: rgba(148,163,184,.35) !important;
+              color: #111827;
+            }
+            .dark .tiktok-hero .card-videos,
+            .dark .tiktok-hero .card-topic,
+            .dark .tiktok-hero .fan-badge {
+              background: #ffffff !important;
+              border-color: rgba(148,163,184,.35) !important;
+              color: #111827 !important;
+              box-shadow: 0 10px 24px rgba(17,24,39,.20) !important;
+            }
+
+            /* Prevent Tailwind dark: utilities from flipping inside cards */
+            .dark .tiktok-hero .card-videos .dark\:text-white,
+            .dark .tiktok-hero .card-topic .dark\:text-white { color: #111827 !important; }
+            .dark .tiktok-hero .video-thumb { background: #f3f4f6 !important; }
+
+            /* Light placeholders regardless of mode */
+            .tiktok-hero .card-videos .h-2,
+            .tiktok-hero .card-topic .h-2 { background-color: #e5e7eb !important; }
+            .dark .tiktok-hero .card-videos .dark\:bg-gray-600,
+            .dark .tiktok-hero .card-topic .dark\:bg-gray-600 { background-color: #e5e7eb !important; }
+
+            /* Hero left copy on gradient */
+            .tiktok-hero .hero-copy h1 { color: #ffffff; }
+            .tiktok-hero .hero-copy p { color: rgba(255,255,255,0.9); }
+            .tiktok-hero .hero-copy .subtext { color: rgba(255,255,255,0.75) !important; }
+          </style>
+
+          <!-- Override: soften orange more, shift toward amber/yellow -->
+          <style>
+            .tiktok-hero {
+              background:
+                radial-gradient(520px 300px at 95% -10%, rgba(253,224,71,0.25), rgba(253,224,71,0) 60%),
+                radial-gradient(900px 520px at 88% 20%, rgba(251,146,60,0.18), rgba(251,146,60,0) 70%),
+                radial-gradient(1200px 600px at 70% 110%, rgba(245,158,11,0.12), rgba(245,158,11,0) 60%),
+                radial-gradient(1000px 560px at 8% 100%, rgba(139,92,246,0.12), rgba(139,92,246,0) 60%),
+                linear-gradient(120deg, #a78bfa 0%, #fbbf24 38%, #fcd34d 60%, #fde68a 82%, #fef3c7 100%);
+            }
+            .dark .tiktok-hero {
+              background:
+                radial-gradient(520px 300px at 95% -10%, rgba(253,224,71,0.25), rgba(253,224,71,0) 60%),
+                radial-gradient(900px 520px at 88% 20%, rgba(251,146,60,0.18), rgba(251,146,60,0) 70%),
+                radial-gradient(1200px 600px at 70% 110%, rgba(245,158,11,0.12), rgba(245,158,11,0) 60%),
+                radial-gradient(1000px 560px at 8% 100%, rgba(139,92,246,0.12), rgba(139,92,246,0) 60%),
+                linear-gradient(120deg, #a78bfa 0%, #fbbf24 38%, #fcd34d 60%, #fde68a 82%, #fef3c7 100%);
+            }
+          </style>
+
+          <!-- Final override: light purple corners (top-left, bottom-right), warm orange/yellow center -->
+          <style>
+            .tiktok-hero {
+              background:
+                /* warm center */
+                radial-gradient(60% 60% at 50% 52%, rgba(251,146,60,0.32) 0%, rgba(253,224,71,0.28) 45%, rgba(251,146,60,0.00) 75%),
+                /* subtle purple top-left */
+                radial-gradient(800px 520px at 0% 0%, rgba(139,92,246,0.18), rgba(139,92,246,0.00) 70%),
+                /* subtle purple bottom-right */
+                radial-gradient(900px 560px at 100% 100%, rgba(168,85,247,0.16), rgba(168,85,247,0.00) 72%),
+                /* gentle sweep */
+                linear-gradient(120deg, #fde68a 0%, #fbbf24 34%, #fb923c 64%, #f59e0b 100%);
+            }
+            .dark .tiktok-hero {
+              background:
+                radial-gradient(60% 60% at 50% 52%, rgba(251,146,60,0.32) 0%, rgba(253,224,71,0.28) 45%, rgba(251,146,60,0.00) 75%),
+                radial-gradient(800px 520px at 0% 0%, rgba(139,92,246,0.18), rgba(139,92,246,0.00) 70%),
+                radial-gradient(900px 560px at 100% 100%, rgba(168,85,247,0.16), rgba(168,85,247,0.00) 72%),
+                linear-gradient(120deg, #fde68a 0%, #fbbf24 34%, #fb923c 64%, #f59e0b 100%);
+            }
+          </style>
+
+          <!-- Corner purple emphasized: place purple layers on top so they are visible over warm center -->
+          <style>
+            .tiktok-hero {
+              background:
+                /* purple top-left (topmost) */
+                radial-gradient(700px 480px at 0% 0%, rgba(139,92,246,0.35), rgba(139,92,246,0) 72%),
+                /* purple bottom-right */
+                radial-gradient(820px 540px at 100% 100%, rgba(168,85,247,0.30), rgba(168,85,247,0) 74%),
+                /* warm center underneath */
+                radial-gradient(58% 58% at 50% 52%, rgba(251,146,60,0.28) 0%, rgba(253,224,71,0.22) 44%, rgba(251,146,60,0.00) 75%),
+                /* base sweep */
+                linear-gradient(120deg, #fde68a 0%, #fbbf24 34%, #fb923c 64%, #f59e0b 100%);
+            }
+            .dark .tiktok-hero {
+              background:
+                radial-gradient(700px 480px at 0% 0%, rgba(139,92,246,0.35), rgba(139,92,246,0) 72%),
+                radial-gradient(820px 540px at 100% 100%, rgba(168,85,247,0.30), rgba(168,85,247,0) 74%),
+                radial-gradient(58% 58% at 50% 52%, rgba(251,146,60,0.28) 0%, rgba(253,224,71,0.22) 44%, rgba(251,146,60,0.00) 75%),
+                linear-gradient(120deg, #fde68a 0%, #fbbf24 34%, #fb923c 64%, #f59e0b 100%);
+            }
+          </style>
+
+          <!-- WHITE HERO BACKGROUND with contrast helpers -->
+          <style>
+            /* Simplified white hero: thin border, subtle shadow, no decorative overlays */
+            .tiktok-hero { background:#ffffff !important; background-image:none !important; position:relative; border:1px solid #e5e7eb !important; border-radius:1.5rem !important; box-shadow:0 4px 18px rgba(0,0,0,0.05) !important; }
+            /* Remove previous inner radial tint */
+            .tiktok-hero::before { content:none !important; }
+            /* Neutralize dark mode (identical look) */
+            .dark .tiktok-hero { background:#ffffff !important; border:1px solid #e5e7eb !important; box-shadow:0 4px 18px rgba(0,0,0,0.05) !important; }
+            /* Text colors (light scheme only) */
+            .tiktok-hero .hero-copy h1 { color:#111827 !important; }
+            .tiktok-hero .hero-copy p { color:#374151 !important; }
+            .tiktok-hero .hero-copy .subtext { color:#6b7280 !important; }
+            /* Floating cards (topic & badge): shadow-only */
+            .tiktok-hero .card-topic,
+            .tiktok-hero .fan-badge { background:#ffffff !important; border:none !important; box-shadow:0 16px 40px -10px rgba(0,0,0,0.20), 0 6px 18px rgba(0,0,0,0.08) !important; }
+            .tiktok-hero .card-topic::before,
+            .tiktok-hero .fan-badge::before { display:none !important; }
+            .dark .tiktok-hero .card-topic,
+            .dark .tiktok-hero .fan-badge { background:#ffffff !important; border:none !important; box-shadow:0 16px 40px -10px rgba(0,0,0,0.20), 0 6px 18px rgba(0,0,0,0.08) !important; }
+            /* Video card: restore TikTok-style pink→cyan gradient border & multi-color text */
+            .tiktok-hero .card-videos { background:#ffffff !important; position:absolute !important; border-radius:20px !important; border:none !important; box-shadow:0 16px 42px -12px rgba(0,0,0,0.25), 0 8px 22px rgba(0,0,0,0.08) !important; left:.5rem !important; bottom:.75rem !important; width:320px !important; z-index:12 !important; }
+            .tiktok-hero .card-videos::before { content:""; position:absolute; inset:-2px; border-radius:inherit; z-index:-1; background:linear-gradient(135deg,#ec4899 0%,#06b6d4 100%); filter:blur(.4px); }
+            .tiktok-hero .card-videos::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background:none !important; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.6) !important; }
+            /* Ensure gradient text stays vivid */
+            .tiktok-hero .gradient-text { background:linear-gradient(90deg,#06b6d4,#ec4899) !important; -webkit-background-clip:text; background-clip:text; color:transparent !important; }
+            .dark .tiktok-hero .card-videos { background:#ffffff !important; }
+            /* Reposition topic card to the right, away from video card */
+            .tiktok-hero .card-topic { right:.75rem !important; bottom:.75rem !important; z-index:20 !important; }
+            /* Force light placeholders */
+            .tiktok-hero .video-thumb,
+            .tiktok-hero .mw-card,
+            .tiktok-hero .sk-img,
+            .tiktok-hero .sk-line,
+            .tiktok-hero .card-topic .h-2 { background:#f3f4f6 !important; border-color:#e5e7eb !important; }
+          </style>
+
+          <div class="grid items-center gap-8 p-8 md:p-12 lg:grid-cols-2">
+            <!-- Left: Text content -->
+            <div class="hero-copy">
+              <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Tiktok Comment Scraper</h1>
+              <p class="mt-4 text-lg">Extract real-time data from TikTok Shop and social media platforms, enabling market and consumer behavior modeling to support AI.</p>
+              <div class="mt-8">
+                <a href="/tiktok-scraper-ui/" class="inline-flex items-center justify-center rounded-xl bg-orange-500 text-white px-6 py-3 font-semibold shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400">Try for free</a>
+                <div class="mt-3 text-sm text-gray-500 dark:text-gray-400 subtext">No credit card required</div>
+              </div>
+            </div>
+            <!-- Right: layered illustration with sequential animations -->
+            <div class="relative hero-right">
+              <!-- Mock window (back layer) -->
+              <div class="mock-window anim fade-down d0">
+                <div class="dots">
+                  <span class="dot bg-red-400"></span>
+                  <span class="dot bg-yellow-400"></span>
+                  <span class="dot bg-green-400"></span>
+                </div>
+                <div class="mw-grid">
+                  <div class="mw-card">
+                    <div class="sk-img"></div>
+                    <div class="mt-3 space-y-2">
+                      <div class="sk-line w-3/4"></div>
+                      <div class="sk-line w-2/3"></div>
+                      <div class="sk-line w-1/2"></div>
+                    </div>
+                  </div>
+                  <div class="mw-card">
+                    <div class="sk-img"></div>
+                    <div class="mt-3 space-y-2">
+                      <div class="sk-line w-4/5"></div>
+                      <div class="sk-line w-2/3"></div>
+                      <div class="sk-line w-1/2"></div>
+                    </div>
+                  </div>
+                  <div class="mw-card">
+                    <div class="sk-img"></div>
+                    <div class="mt-3 space-y-2">
+                      <div class="sk-line w-3/5"></div>
+                      <div class="sk-line w-2/3"></div>
+                      <div class="sk-line w-1/2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fan growth badge -->
+              <div class="fan-badge anim fade-down d1 text-gray-700">
+                <span>Fan growth</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a3 3 0 100-6 3 3 0 000 6z"/><path d="M7 11a3 3 0 100-6 3 3 0 000 6z"/><path d="M7 21v-2a4 4 0 014-4h2"/><path d="M16 19v-2a4 4 0 00-4-4h-1"/></svg>
+              </div>
+
+              <!-- Videos card -->
+              <div class="card-videos anim fade-left d2 p-4">
+                <div class="text-lg font-semibold text-gray-900">Videos</div>
+                <div class="video-thumb mt-3"></div>
+                <div class="mt-3 flex items-center gap-2">
+                  <span class="dot-small"></span>
+                  <span class="dot-small"></span>
+                  <span class="dot-small"></span>
+                  <span class="dot-small"></span>
+                </div>
+                <div class="mt-3 space-y-2">
+                  <div class="h-2 w-4/5 rounded bg-gray-200"></div>
+                  <div class="h-2 w-3/5 rounded bg-gray-200"></div>
+                </div>
+              </div>
+
+              <!-- Popular topic card -->
+              <div class="card-topic anim fade-up d3 p-4">
+                <div class="font-semibold text-gray-900">Popular topic</div>
+                <ul class="mt-3 space-y-3 text-sm">
+                  <li class="flex items-center gap-3"><span class="font-bold text-red-500">1</span><span class="h-2 flex-1 rounded bg-gray-200"></span></li>
+                  <li class="flex items-center gap-3"><span class="font-bold text-red-500">2</span><span class="h-2 flex-1 rounded bg-gray-200"></span></li>
+                  <li class="flex items-center gap-3"><span class="font-bold text-red-500">3</span><span class="h-2 flex-1 rounded bg-gray-200"></span></li>
+                  <li class="flex items-center gap-3"><span class="text-gray-400">…</span><span class="h-2 flex-1 rounded bg-gray-200"></span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- About TikTok section (replaces the two scrape cards) -->
+        <section class="relative mt-16 overflow-hidden bg-white py-20">
+          <div class="container mx-auto max-w-3xl px-6 text-center">
+            <!-- Illustration top-right: sun + clouds -->
+            <div class="pointer-events-none absolute -right-10 -top-10 select-none opacity-90">
+              <div class="relative">
+                <!-- Sun -->
+                <div class="h-28 w-28 rounded-full bg-gradient-to-br from-yellow-300 via-amber-300 to-orange-400 blur-[1px]"></div>
+                <!-- Clouds -->
+                <div class="absolute -bottom-8 -left-6 flex items-end gap-3 text-[#ECF4FA]">
+                  <div class="h-12 w-24 rounded-full bg-current"></div>
+                  <div class="h-16 w-36 rounded-full bg-current"></div>
+                  <div class="h-12 w-20 rounded-full bg-current"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center icon with concentric circles -->
+            <div class="relative mx-auto mb-8 grid place-items-center">
+              <!-- Outer soft ring -->
+              <div class="h-[360px] w-[360px] rounded-full bg-[#F5FAFF]"></div>
+              <!-- Inner ring -->
+              <div class="absolute h-[240px] w-[240px] rounded-full bg-[#EEF6FF]"></div>
+              <!-- TikTok image provided by user -->
+              <img src="/images/home/images.png" alt="TikTok logo" class="absolute h-36 w-36 object-contain" />
+            </div>
+
+            <!-- Heading -->
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">About TikTok</h2>
+            <!-- Description: three lines-ish -->
+            <p class="mx-auto mt-5 max-w-3xl text-[1.05rem] leading-8 text-[#2F365F]">
+              With 1.5 billion monthly active users as of 2022, TikTok is arguably the hottest social media platform at the moment.
+              TikTok videos are the main driving force of the website, attracting the young audience and helping them build large communities.
+              With features like live streaming and video editing, TikTok users are generating and sharing huge volumes of customer
+              behavior data, which can be invaluable for your next project – and we can help you obtain it.
+            </p>
+          </div>
+        </section>
+
+        <!-- Feature: TikTok Comment Scraping API -->
+        <section class="comment-api mt-12 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+          <style>
+            /* Browser frame with soft border/shadow */
+            .comment-api .browser-frame{position:relative;border:1px solid #e5e7eb;border-radius:20px;background:#fff;box-shadow:0 16px 36px rgba(17,24,39,.10);overflow:hidden}
+            .comment-api .browser-frame::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(17,24,39,.04)}
+            .comment-api .browser-top{height:44px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:8px;padding:0 14px}
+            .comment-api .dot{width:10px;height:10px;border-radius:9999px}
+            .comment-api .shot{background:#0b0f19; height:520px}
+            .comment-api .shot img{display:block;width:100%;height:100%;object-fit:cover}
+          </style>
+
+          <div class="grid items-center gap-10 md:grid-cols-2">
+            <!-- Copy -->
+            <div>
+              <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">TikTok Comment Scraping API</h2>
+              <p class="mt-4 text-[1.05rem] leading-8 text-gray-600 dark:text-gray-300">
+                The Comments Scraper API from TikTok allows users to extract and analyze comments from posts across the platform. 
+                This data API scrapes user‑generated feedback on specific videos, offering insights into audience sentiment, engagement, 
+                and interaction with content. By leveraging the Comments Scraper API, developers can gather detailed comment data, including 
+                comment text, user information, and timestamps, which is essential for understanding viewer reactions and trends.
+              </p>
+              <div class="mt-6">
+                <a href="#" class="inline-flex items-center rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                  Check Documentation
+                </a>
+              </div>
+            </div>
+            <!-- Visual: Browser frame containing TikTok desktop screenshot -->
+            <div class="relative mx-auto w-full max-w-[860px]">
+              <div class="browser-frame">
+                <div class="browser-top">
+                  <span class="dot" style="background:#ef4444"></span>
+                  <span class="dot" style="background:#fbbf24"></span>
+                  <span class="dot" style="background:#22c55e"></span>
+                </div>
+                <div class="shot">
+                  <img src="/images/home/Tiktok%20exa.png" alt="TikTok on desktop screenshot" />
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </section>
+
+        <!-- Testimonials Carousel -->
+        <!-- REPLACED / UPDATED Review Section -->
+        <section class="mt-12 reviews-bs">
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+          <style>
+            /* Base layout */
+            .reviews-bs{font-family:'Inter',sans-serif; position:relative; border-radius:1.5rem; padding:3rem 1.5rem; overflow:hidden;}
+            /* Plain white background only (no border, no shadow, no inner stroke) */
+            .reviews-bs{background:#fff; border:none; box-shadow:none;}
+            .reviews-bs::before{content:none;}
+            .dark .reviews-bs{background:#fff; border:none; box-shadow:none;}
+            .reviews-bs .gradient-text{background:linear-gradient(90deg,#6366f1,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
+            .reviews-bs .subtitle{color:#6b7280;}
+            .reviews-bs .cols{display:grid; grid-template-columns:1fr; gap:1.75rem;}
+            @media (min-width:768px){.reviews-bs .cols{grid-template-columns:repeat(2,1fr);}}
+            @media (min-width:1024px){.reviews-bs .cols{grid-template-columns:repeat(3,1fr);}}
+            /* Removed forced black h2 color */
+            .reviews-bs .column{height:36rem; overflow:hidden; position:relative;}
+            .reviews-bs .track{display:flex; flex-direction:column; gap:1.1rem;}
+            .reviews-bs .card{background:#f8fafc; border:1px solid #e2e8f0; border-radius:1rem; padding:1.25rem 1.25rem 1.1rem; box-shadow:0 4px 10px -2px rgba(17,24,39,0.06); transition:transform .35s ease, box-shadow .35s ease;}
+            .dark .reviews-bs .card{background:#f8fafc; color:#111827;}
+            .reviews-bs .card:hover{transform:translateY(-4px); box-shadow:0 10px 22px -4px rgba(17,24,39,0.12);}    
+            .reviews-bs .who{font-weight:600; font-size:1.05rem; margin:0; color:#111827;}
+            .reviews-bs .role{font-size:.75rem; font-weight:500; letter-spacing:.5px; text-transform:none; margin:0; color:#64748b;}
+            .reviews-bs .stars{color:#f59e0b; font-size:.85rem; letter-spacing:2px; margin:.45rem 0 .65rem;}
+            .reviews-bs .quote{font-size:.92rem; line-height:1.5; color:#374151;}
+            .dark .reviews-bs .quote{color:#374151;}
+
+            /* Scroll animations (continuous) */
+            @keyframes scrollUp {0%{transform:translateY(0)}100%{transform:translateY(-50%);} }
+            @keyframes scrollDown {0%{transform:translateY(-50%)}100%{transform:translateY(0);} }
+            .reviews-bs .auto-up{animation:scrollUp 50s linear infinite;}
+            .reviews-bs .auto-down{animation:scrollDown 52s linear infinite;}
+
+            .reviews-bs:hover .auto-up, .reviews-bs:hover .auto-down{animation-play-state:running;}
+            .reviews-bs .card:hover{animation-play-state:paused;}
+
+            .reviews-bs .emoji{font-size:2rem; line-height:1; margin-right:.65rem;}
+            .reviews-bs .row-head{display:flex; align-items:center; margin-bottom:.35rem;}
+
+            .reviews-bs .column::-webkit-scrollbar{display:none;}
+
+            .reviews-bs h2{font-size:2.15rem; line-height:1.15;}
+            @media (min-width:640px){.reviews-bs h2{font-size:2.6rem;}}
+          </style>
+
+          <div class="mx-auto max-w-[1280px]">
+            <div class="text-center mb-10">
+              <!-- Heading set to solid black -->
+              <h2 class="font-extrabold tracking-tight text-gray-900">What Our Customers Say</h2>
+              <p class="subtitle text-base sm:text-lg mt-4">Hear from thousands of happy users who trust our service.</p>
+            </div>
+
+            <div class="cols">
+              <!-- Column 1 (scroll up) -->
+              <div class="column">
+                <div class="track auto-up">
+                  <div class="track">
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">😀</span><div><p class="who">Alex R.</p><p class="role">Entrepreneur</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“This TikTok comment scraper works flawlessly! I can pull thousands of comments in seconds. It saves me hours every day.”</p>
+                    </div>
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">🚀</span><div><p class="who">Sarah W.</p><p class="role">Freelance Designer</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“Super accurate and fast. The data export is clean and organized — perfect for our customer sentiment analysis.”</p>
+                    </div>
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">🤩</span><div><p class="who">Michael B.</p><p class="role">Startup Founder</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“I love how easy it is to use. Just paste the link, click one button, and boom — all comments are ready. Highly recommended!”</p>
+                    </div>
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">😊</span><div><p class="who">Jessica L.</p><p class="role">Marketer</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“Great tool for marketers. It helped us understand what customers are really talking about on TikTok. Worth every cent.”</p>
+                    </div>
+                  </div>
+                  <!-- duplicate for seamless loop -->
+                  <div class="track">
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">😀</span><div><p class="who">Alex R.</p><p class="role">Entrepreneur</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“This platform is a game-changer for my business. The intuitive interface and powerful features have saved me countless hours. Highly recommend!”</p>
+                    </div>
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">🚀</span><div><p class="who">Sarah W.</p><p class="role">Freelance Designer</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“The best TikTok scraping tool I’ve tried so far. No crashes, no limits, just fast and reliable data extraction.”</p>
+                    </div>
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">🤩</span><div><p class="who">Michael B.</p><p class="role">Startup Founder</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“Customer support is amazing! They helped me set everything up in minutes. The tool works exactly as described.”</p>
+                    </div>
+                    <div class="card">
+                      <div class="row-head"><span class="emoji">😊</span><div><p class="who">Jessica L.</p><p class="role">Marketer</p></div></div>
+                      <div class="stars">★★★★★</div>
+                      <p class="quote">“Perfect for my research. It extracts comments, usernames, timestamps — everything I need to analyze engagement.”</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 2 (scroll down) -->
+              <div class="column hidden md:block">
+                <div class="track auto-down">
+                  <div class="track">
+                    <div class="card"><div class="row-head"><span class="emoji">🌟</span><div><p class="who">Chloe K.</p><p class="role">Product Manager</p></div></div><div class="stars">★★★★★</div><p class="quote">“Most comprehensive solution we've found. Everything our team needs to succeed is here.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">🎉</span><div><p class="who">David P.</p><p class="role">Marketing Lead</p></div></div><div class="stars">★★★★★</div><p class="quote">“Simple yet incredibly effective. Productivity up significantly in the first month.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">✨</span><div><p class="who">Olivia G.</p><p class="role">Creative Director</p></div></div><div class="stars">★★★★★</div><p class="quote">“Design & functionality are top‑tier. A pleasure to use daily.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">👍</span><div><p class="who">Liam F.</p><p class="role">Developer</p></div></div><div class="stars">★★★★★</div><p class="quote">“Clear docs, outstanding performance – best tool in its category.”</p></div>
+                  </div>
+                  <div class="track">
+                    <div class="card"><div class="row-head"><span class="emoji">🌟</span><div><p class="who">Chloe K.</p><p class="role">Product Manager</p></div></div><div class="stars">★★★★★</div><p class="quote">“Most comprehensive solution we've found. Everything our team needs to succeed is here.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">🎉</span><div><p class="who">David P.</p><p class="role">Marketing Lead</p></div></div><div class="stars">★★★★★</div><p class="quote">“Simple yet incredibly effective. Productivity up significantly in the first month.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">✨</span><div><p class="who">Olivia G.</p><p class="role">Creative Director</p></div></div><div class="stars">★★★★★</div><p class="quote">“Design & functionality are top‑tier. A pleasure to use daily.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">👍</span><div><p class="who">Liam F.</p><p class="role">Developer</p></div></div><div class="stars">★★★★★</div><p class="quote">“Clear docs, outstanding performance – best tool in its category.”</p></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 3 (scroll up) -->
+              <div class="column hidden lg:block">
+                <div class="track auto-up" style="animation-duration:55s;">
+                  <div class="track">
+                    <div class="card"><div class="row-head"><span class="emoji">👏</span><div><p class="who">Emily C.</p><p class="role">UI/UX Designer</p></div></div><div class="stars">★★★★★</div><p class="quote">“Attention to detail and clean design set this apart. A joy to interact with every day.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">💯</span><div><p class="who">Ben H.</p><p class="role">Business Analyst</p></div></div><div class="stars">★★★★★</div><p class="quote">“Data visualization tools make complex data easy to understand and present.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">💖</span><div><p class="who">Sophie R.</p><p class="role">Writer</p></div></div><div class="stars">★★★★★</div><p class="quote">“Organize thoughts & projects more efficiently. Massive productivity boost.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">🥳</span><div><p class="who">Jake M.</p><p class="role">Consultant</p></div></div><div class="stars">★★★★★</div><p class="quote">“Support is lightning fast. Minor issue fixed in minutes.”</p></div>
+                  </div>
+                  <div class="track">
+                    <div class="card"><div class="row-head"><span class="emoji">👏</span><div><p class="who">Emily C.</p><p class="role">UI/UX Designer</p></div></div><div class="stars">★★★★★</div><p class="quote">“Attention to detail and clean design set this apart. A joy to interact with every day.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">💯</span><div><p class="who">Ben H.</p><p class="role">Business Analyst</p></div></div><div class="stars">★★★★★</div><p class="quote">“Data visualization tools make complex data easy to understand and present.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">💖</span><div><p class="who">Sophie R.</p><p class="role">Writer</p></div></div><div class="stars">★★★★★</div><p class="quote">“Organize thoughts & projects more efficiently. Massive productivity boost.”</p></div>
+                    <div class="card"><div class="row-head"><span class="emoji">🥳</span><div><p class="who">Jake M.</p><p class="role">Consultant</p></div></div><div class="stars">★★★★★</div><p class="quote">“Support is lightning fast. Minor issue fixed in minutes.”</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="mt-12 overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 p-8 text-white">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h3 class="text-2xl font-bold">Ready to automate the web?</h3>
+              <p class="text-white/90">Create your first crawler today — free tier included.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <a href="{{ "/home/" | relURL }}" class="inline-flex items-center rounded-lg bg-white px-5 py-3 text-sm font-semibold text-indigo-900 hover:bg-gray-100">
+                Get started
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </a>
+              <a href="{{ "/settings/" | relURL }}" class="inline-flex items-center rounded-lg border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10">
+                Talk to sales
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- INSERTED: Dashboard footer copied below CTA -->
+  <footer class="p-4 mt-4 mb-2 mx-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 xl:p-8 dark:bg-gray-800">
+          <ul class="flex flex-wrap items-center mb-6 space-y-1 md:mb-0">
+            <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Terms and conditions</a></li>
+            <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Privacy Policy</a></li>
+            <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Licensing</a></li>
+            <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Cookie Policy</a></li>
+            <li><a href="#" class="text-sm font-normal text-gray-500 hover:underline dark:text-gray-400">Contact</a></li>
+          </ul>
+          <div class="flex space-x-6 sm:justify-center">
+            <a href="#" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782 .605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003 .07 1.531 1.032 1.531 1.032 .892 1.53 2.341 1.088 2.91 .832 .092-.647 .35-1.088 .636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093 .39-1.988 1.029-2.688-.103-.253-.446-1.272 .098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85 .004 1.705 .115 2.504 .337 1.909-1.296 2.747-1.027 2.747-1.027 .546 1.379 .202 2.398 .1 2.651 .64 .7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943 .359 .309 .678 .92 .678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268 .18 .58 .688 .482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154 .813 5.662 2.148-.152 .216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633 .803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37 .01 4.512 .065 8.775-1.215 .25 .477 .477 .965 .694 1.453-.109 .033-.228 .065-.336 .098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337 .022-.01 .033-.01 .054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341 .684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022 .271 5.314 .369a8.468 8.468 0 01-3.655 5.715z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </footer>
+  <p class="mt-2 mb-0 text-sm text-center text-gray-500">
+          &copy;  <a href="{{ .Site.Params.homepage }}" class="hover:underline" target="_blank">AnglerData</a>.  
+        </p>
+        <!-- END INSERTED FOOTER -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Trigger animations when hero enters viewport -->
+<script>
+  (function(){
+    var hero = document.querySelector(".tiktok-hero");
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          hero.classList.add("play");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(hero);
+  })();
+</script>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">

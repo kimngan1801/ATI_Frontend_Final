@@ -1,0 +1,27 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{ .Site.Params.description }}">
+<meta name="author" content="{{ .Site.Params.authors }}">
+<meta name="generator" content="Hugo {{ hugo.Version }}">
+
+<title>{{ .Site.Title }}</title>
+
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="stylesheet" href="/icon-colors.css">
+<link rel="stylesheet" href="/toggle-colors.css">
+<link rel="stylesheet" href="/switch-styles.css">
+<link rel="stylesheet" href="/dropdown-buttons.css">
+
+{{ with .Params.robots -}}
+<meta name="robots" content="{{ . }}">
+{{- end }}
+
+<!-- Material Symbols for icon ligatures (needed by chatbot icons) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+{{ partial "stylesheet" . }}
+{{ partial "favicons" . }}
+{{ partial "social" . }}
+{{ partial "analytics" . }}
