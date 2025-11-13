@@ -7,7 +7,7 @@
           <svg id="toggleSidebarMobileClose" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
         </button>
         <a href="{{ "/" | relURL }}" class="flex ml-2 md:mr-24">
-          <img src="/images/logo.svg" class="h-8 mr-3" alt="AnglerData Logo" />
+          <img src="/images/AnglerDataLogo/logo.svg" class="h-8 mr-3" alt="AnglerData Logo" />
           <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">AnglerData</span>
         </a>
         <form action="#" method="GET" class="hidden lg:block lg:pl-3.5">
@@ -31,10 +31,45 @@
           <div class="flex items-center space-x-3">
             <!-- Settings and notifications removed per request -->
             <!-- Profile -->
-            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button-2" aria-expanded="false" data-dropdown-toggle="user-dropdown">
-              <span class="sr-only">Open user menu</span>
-              <img class="w-8 h-8 rounded-full" src="{{ "/chatbot/images/AvatarUser.jpg" | relURL }}" alt="user photo">
-            </button>
+            <div class="relative">
+              <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button-2" aria-expanded="false">
+                <span class="sr-only">Open user menu</span>
+                <img class="w-8 h-8 rounded-full" src="{{ "/chatbot/images/AvatarUser.jpg" | relURL }}" alt="user photo">
+              </button>
+              <!-- User dropdown menu -->
+              <div class="z-50 hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700" id="user-dropdown">
+                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white" id="user-name">Kim Ngan</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="user-email">kim.ngan@example.com</p>
+                </div>
+                <div class="py-1">
+                  <button onclick="handleLogout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+              <script>
+                // Custom dropdown toggle
+                document.addEventListener('DOMContentLoaded', function() {
+                  const button = document.getElementById('user-menu-button-2');
+                  const dropdown = document.getElementById('user-dropdown');
+                  
+                  if (button && dropdown) {
+                    button.addEventListener('click', function(e) {
+                      e.stopPropagation();
+                      dropdown.classList.toggle('hidden');
+                    });
+                    
+                    // Close when clicking outside
+                    document.addEventListener('click', function(e) {
+                      if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                      }
+                    });
+                  }
+                });
+              </script>
+            </div>
           </div>
           {{ else }}
           <!-- Home (landing) navbar actions: show Sign in / Sign up instead of icons -->
@@ -49,22 +84,6 @@
           {{ end }}
           
           {{ if not .Params.hideSidebar }}
-          <!-- User dropdown menu -->
-          <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
-            <div class="px-4 py-3" role="none">
-              <p class="text-sm text-gray-900 dark:text-white" id="user-name"></p>
-              <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" id="user-email"></p>
-            </div>
-            <ul class="py-1" role="none">
-              <li>
-                <a href="{{ "/settings/" | relURL }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
-              </li>
-              <li>
-                <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</button>
-              </li>
-            </ul>
-          </div>
-
           <script>
       // ...existing code...
           </script>

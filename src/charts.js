@@ -1,5 +1,28 @@
 import ApexCharts from 'apexcharts';
 
+// Fetch data from mock-data.json
+let chartData = null;
+
+async function loadChartData() {
+	try {
+		const response = await fetch('/mock-data.json');
+		if (!response.ok) throw new Error('Failed to load data');
+		chartData = await response.json();
+		console.log('✅ Loaded chart data from mock-data.json:', chartData);
+		return chartData;
+	} catch (error) {
+		console.error('❌ Error loading mock-data.json:', error);
+		// Fallback to hardcoded data
+		return {
+			mainChart: {
+				categories: ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
+				positive: [65, 58, 62, 73, 68, 59, 52],
+				negative: [35, 42, 38, 27, 32, 41, 48]
+			}
+		};
+	}
+}
+
 const getMainChartOptions = () => {
 	let mainChartColors = {}
 
@@ -74,12 +97,12 @@ const getMainChartOptions = () => {
 		series: [
 			{
 				name: 'Positive',
-				data: [65, 58, 62, 73, 68, 59, 52],
+				data: chartData?.mainChart?.positive || [65, 58, 62, 73, 68, 59, 52],
 				color: '#10B981'
 			},
 			{
 				name: 'Negative',
-				data: [35, 42, 38, 27, 32, 41, 48],
+				data: chartData?.mainChart?.negative || [35, 42, 38, 27, 32, 41, 48],
 				color: '#EF4444'
 			}
 		],
@@ -97,7 +120,7 @@ const getMainChartOptions = () => {
 			}
 		},
 		xaxis: {
-			categories: ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
+			categories: chartData?.mainChart?.categories || ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
 			labels: {
 				style: {
 					colors: [mainChartColors.labelColor],
@@ -161,14 +184,24 @@ const getMainChartOptions = () => {
 	};
 }
 
-if (document.getElementById('main-chart')) {
-	const chart = new ApexCharts(document.getElementById('main-chart'), getMainChartOptions());
-	chart.render();
+// Initialize charts after loading data
+async function initCharts() {
+	await loadChartData();
+	
+	if (document.getElementById('main-chart')) {
+		const chart = new ApexCharts(document.getElementById('main-chart'), getMainChartOptions());
+		chart.render();
 
-	// init again when toggling dark mode
-	document.addEventListener('dark-mode', function () {
-		chart.updateOptions(getMainChartOptions());
-	});
+		// init again when toggling dark mode
+		document.addEventListener('dark-mode', function () {
+			chart.updateOptions(getMainChartOptions());
+		});
+	}
+}
+
+// Start initialization
+if (document.getElementById('main-chart')) {
+	initCharts();
 }
 
 if (document.getElementById('new-products-chart')) {
@@ -259,21 +292,25 @@ if (document.getElementById('new-products-chart')) {
 }
 
 if (document.getElementById('sales-by-category')) {
-	const options = {
-		series: [
+	// Load data dynamically from mock-data.json
+	loadChartData().then(() => {
+		const categoryData = chartData?.salesByCategory || [
 			{ name: 'Hỏi giá', data: [342] },
 			{ name: 'Hỏi link', data: [268] },
 			{ name: 'Hỏi mua', data: [195] },
 			{ name: 'Khen ngợi', data: [142] },
 			{ name: 'Góp ý nội dung', data: [98] },
 			{ name: 'Khác', data: [67] }
-		],
+		];
 
-		colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#8E8E93'],
+		const options = {
+			series: categoryData,
+
+			colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#8E8E93', '#AF52DE', '#FF2D55', '#5856D6'],
 
 		chart: {
 			type: 'bar',
-			height: 420,
+			height: 520,
 			fontFamily: 'SF Pro Display, Inter, sans-serif',
 			foreColor: '#374151',
 			toolbar: { show: false }
@@ -284,6 +321,7 @@ if (document.getElementById('sales-by-category')) {
 				horizontal: true,
 				borderRadius: 10,
 				borderRadiusApplication: 'end',
+				barHeight: '75%',
 				dataLabels: { position: 'top' }
 			}
 		},
@@ -302,9 +340,9 @@ if (document.getElementById('sales-by-category')) {
 			style: { fontSize: '15px', fontWeight: 'bold' },
 			y: {
 				formatter: function(value, { seriesIndex }) {
-					const names = ['Hỏi giá', 'Hỏi link', 'Hỏi mua', 'Khen ngợi', 'Góp ý nội dung', 'Khác'];
+					const categoryName = categoryData[seriesIndex]?.name || 'Unknown';
 					return `<div class="p-2">
-							<div class="font-bold text-lg">${names[seriesIndex]}</div>
+							<div class="font-bold text-lg">${categoryName}</div>
 							<div class="text-sm">${value} bình luận</div>
 						</div>`;
 				}
@@ -353,8 +391,9 @@ if (document.getElementById('sales-by-category')) {
 		}
 	};
 
-	const chart = new ApexCharts(document.getElementById('sales-by-category'), options);
-	chart.render();
+		const chart = new ApexCharts(document.getElementById('sales-by-category'), options);
+		chart.render();
+	});
 }
 
 const getVisitorsChartOptions = () => {
@@ -534,8 +573,11 @@ const getTrafficChannelsChartOptions = () => {
 		}
 	}
 
+	// Lấy dữ liệu động từ chartData
+	const emotionData = chartData?.trafficEmotions || [12, 8, 6, 4];
+
 	return {
-		series: [12, 8, 6, 4],
+		series: emotionData,
 		labels: ['Love', 'Funny', 'Angry', 'Sad'],
 		colors: ['#EC4899', '#FBBF24', '#F97316', '#3B82F6'],
 		chart: {
@@ -616,12 +658,15 @@ const getTrafficChannelsChartOptions = () => {
 }
 
 if (document.getElementById('traffic-by-device')) {
-	const chart = new ApexCharts(document.getElementById('traffic-by-device'), getTrafficChannelsChartOptions());
-	chart.render();
+	// Initialize chart after data is loaded
+	loadChartData().then(() => {
+		const chart = new ApexCharts(document.getElementById('traffic-by-device'), getTrafficChannelsChartOptions());
+		chart.render();
 
-	// init again when toggling dark mode
-	document.addEventListener('dark-mode', function () {
-		chart.updateOptions(getTrafficChannelsChartOptions());
+		// init again when toggling dark mode
+		document.addEventListener('dark-mode', function () {
+			chart.updateOptions(getTrafficChannelsChartOptions());
+		});
 	});
 }
 
@@ -641,13 +686,17 @@ const getActionableChartOptions = () => {
 		};
 	}
 
+	// Load data dynamically from chartData
+	const actionableData = chartData?.actionable || [48, 28, 12, 8, 4];
+	const actionableLabels = ['Cần trả lời', 'Cần chuyển sale', 'Spam', 'Toxic', 'Không cần xử lý'];
+
 	return {
-		series: [48, 28, 12, 8, 4],
-		labels: ['Cần trả lời', 'Cần chuyển sale', 'Spam', 'Toxic', 'Không cần xử lý'],
+		series: actionableData,
+		labels: actionableLabels,
 		colors: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#A855F7'],
 		chart: {
 			type: 'donut',
-			height: 280,
+			height: 420,
 			fontFamily: 'Inter, sans-serif',
 			background: chartColors.bgColor,
 			toolbar: {
@@ -685,9 +734,8 @@ const getActionableChartOptions = () => {
 				fontFamily: 'Inter, sans-serif',
 			},
 			custom: function({ series, seriesIndex, w }) {
-				const labels = ['Cần trả lời', 'Cần chuyển sale', 'Spam', 'Toxic', 'Không cần xử lý'];
 				return `<div class="px-3 py-2 bg-gray-900 text-white rounded-lg shadow-2xl border border-gray-700">
-							<div class="font-bold text-sm mb-1">${labels[seriesIndex]}</div>
+							<div class="font-bold text-sm mb-1">${actionableLabels[seriesIndex]}</div>
 							<div class="text-2xl font-black">${series[seriesIndex]}%</div>
 						</div>`;
 			}
@@ -721,16 +769,19 @@ const getSentimentBarChartOptions = () => {
 		}
 	}
 
+	// Lấy dữ liệu động từ chartData
+	const sentimentData = chartData?.sentimentBar || [60, 20, 20];
+	
 	return {
 		series: [{
 			name: 'Positive',
-			data: [60]
+			data: [sentimentData[0]]
 		}, {
 			name: 'Neutral',
-			data: [20]
+			data: [sentimentData[1]]
 		}, {
 			name: 'Negative',
-			data: [20]
+			data: [sentimentData[2]]
 		}],
 		chart: {
 			type: 'bar',
@@ -822,22 +873,355 @@ const getSentimentBarChartOptions = () => {
 };
 
 if (document.getElementById('actionableChart')) {
-	const actionableChart = new ApexCharts(document.getElementById('actionableChart'), getActionableChartOptions());
-	actionableChart.render();
+	// Initialize chart after data is loaded
+	loadChartData().then(() => {
+		const actionableChart = new ApexCharts(document.getElementById('actionableChart'), getActionableChartOptions());
+		actionableChart.render();
 
-	// init again when toggling dark mode
-	document.addEventListener('dark-mode', function () {
-		actionableChart.updateOptions(getActionableChartOptions());
+		// init again when toggling dark mode
+		document.addEventListener('dark-mode', function () {
+			actionableChart.updateOptions(getActionableChartOptions());
+		});
 	});
 }
 
 // Initialize Sentiment Bar Chart
 if (document.getElementById('sentiment-bar-chart')) {
-	const sentimentBarChart = new ApexCharts(document.getElementById('sentiment-bar-chart'), getSentimentBarChartOptions());
-	sentimentBarChart.render();
+	// Initialize chart after data is loaded
+	loadChartData().then(() => {
+		const sentimentBarChart = new ApexCharts(document.getElementById('sentiment-bar-chart'), getSentimentBarChartOptions());
+		sentimentBarChart.render();
 
-	// init again when toggling dark mode
-	document.addEventListener('dark-mode', function () {
-		sentimentBarChart.updateOptions(getSentimentBarChartOptions());
+		// init again when toggling dark mode
+		document.addEventListener('dark-mode', function () {
+			sentimentBarChart.updateOptions(getSentimentBarChartOptions());
+		});
 	});
+}
+
+// Load and update Sentiment Legend dynamically
+async function loadSentimentLegend() {
+	try {
+		const data = chartData || await loadChartData();
+		const sentimentData = data.sentimentBar || [60, 20, 20];
+		
+		// Update legend text
+		const legendItems = document.querySelectorAll('#sentiment-legend .legend-item');
+		if (legendItems.length >= 3) {
+			legendItems[0].querySelector('.legend-text').textContent = `Positive (${sentimentData[0]}%)`;
+			legendItems[1].querySelector('.legend-text').textContent = `Neutral (${sentimentData[1]}%)`;
+			legendItems[2].querySelector('.legend-text').textContent = `Negative (${sentimentData[2]}%)`;
+		}
+		
+		console.log('✅ Sentiment legend updated with data:', sentimentData);
+	} catch (error) {
+		console.error('❌ Error loading sentiment legend:', error);
+	}
+}
+
+// Load and update Emotion Cards dynamically (Love, Funny, Angry, Sad)
+async function loadEmotionCards() {
+	try {
+		const data = chartData || await loadChartData();
+		const emotionData = data.trafficEmotions || [12, 8, 6, 4];
+		const emotionNames = ['Love', 'Funny', 'Angry', 'Sad'];
+		
+		emotionNames.forEach((name, index) => {
+			const card = document.getElementById(`emotion-${name.toLowerCase()}`);
+			if (card) {
+				const percentElement = card.querySelector('.emotion-percent');
+				if (percentElement) {
+					percentElement.textContent = `${emotionData[index]}%`;
+				}
+			}
+		});
+		
+		console.log('✅ Emotion cards updated with data:', emotionData);
+	} catch (error) {
+		console.error('❌ Error loading emotion cards:', error);
+	}
+}
+
+// Load and display top comments from mock-data.json
+async function loadTopComments() {
+	try {
+		const data = chartData || await loadChartData();
+		// Sort by like count (descending) and take only top 6
+		const topComments = data.topComments
+			.sort((a, b) => b.count - a.count)
+			.slice(0, 6);
+		
+		const listContainer = document.getElementById('topCommentsList');
+		if (!listContainer) return;
+		
+		listContainer.innerHTML = topComments.map((item, index) => {
+			// Use avatar from data, fallback to default images if not available
+			const imgSrc = item.avatar || '/images/products/iphone.png';
+			
+			return `
+				<li class="py-3 sm:py-4">
+				  <div class="flex items-center justify-between">
+					<div class="flex items-center min-w-0">
+					  <img class="flex-shrink-0 w-10 h-10 rounded-full object-cover" src="${imgSrc}" alt="${item.user} avatar">
+					  <div class="ml-3">
+						<p class="font-medium text-gray-900 truncate dark:text-white">
+						  ${item.user}
+						</p>
+						<div class="flex items-center justify-end flex-1 text-sm text-gray-500">
+						  <span class="ml-2">${item.comment}</span>
+						</div>
+					  </div>
+					</div>
+					<div class="inline-flex items-center gap-2 text-base font-semibold" style="color: #FE2858 !important;">
+					  ${item.count.toLocaleString()}
+					  <svg width="20" height="20" style="fill: #FE2858 !important; color: #FE2858 !important;" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" style="fill: #FE2858 !important;"></path>
+					  </svg>
+					</div>
+				  </div>
+				</li>
+			`;
+		}).join('');
+		
+		console.log('✅ Top Comments loaded successfully');
+	} catch (error) {
+		console.error('❌ Error loading top comments:', error);
+	}
+}
+
+// Load and update Actionable Legend (Progress Bars)
+async function loadActionableLegend() {
+	try {
+		const data = chartData || await loadChartData();
+		const actionableData = data.actionable || [48, 28, 12, 8, 4];
+		
+		const items = document.querySelectorAll('.actionable-item');
+		items.forEach((item, index) => {
+			if (index < actionableData.length) {
+				const percent = actionableData[index];
+				const percentElement = item.querySelector('.actionable-percent');
+				const barElement = item.querySelector('.actionable-bar');
+				
+				if (percentElement) {
+					percentElement.textContent = `${percent}%`;
+				}
+				if (barElement) {
+					barElement.style.width = `${percent}%`;
+				}
+			}
+		});
+		
+		console.log('✅ Actionable legend updated with data:', actionableData);
+	} catch (error) {
+		console.error('❌ Error loading actionable legend:', error);
+	}
+}
+
+// Load top comments after chart data is loaded
+if (document.getElementById('topCommentsList')) {
+	loadTopComments();
+}
+
+// Load sentiment legend and emotion cards
+if (document.getElementById('sentiment-legend')) {
+	loadSentimentLegend();
+}
+if (document.querySelector('.emotion-card')) {
+	loadEmotionCards();
+}
+if (document.getElementById('actionable-legend')) {
+	loadActionableLegend();
+}
+
+// Load intents table
+async function loadIntentsTable(selectedFilters = null) {
+	try {
+		const data = chartData || await loadChartData();
+		let intents = data.intentsTable || [];
+		
+		const tableBody = document.getElementById('intentsTableBody');
+		if (!tableBody) return;
+		
+		// Filter intents if selectedFilters is provided
+		if (selectedFilters && selectedFilters.length > 0) {
+			intents = intents.filter(item => selectedFilters.includes(item.meaning));
+		}
+		
+		// Badge color mapping - 13 loại intent
+		const badgeColors = {
+			'hỏi_giá': 'bg-blue-100 text-blue-800 border-blue-100 dark:bg-gray-700 dark:text-blue-400 dark:border-blue-500',
+			'hỏi_link': 'bg-cyan-100 text-cyan-800 border-cyan-100 dark:bg-gray-700 dark:text-cyan-400 dark:border-cyan-500',
+			'hỏi_mua': 'bg-sky-100 text-sky-800 border-sky-100 dark:bg-gray-700 dark:text-sky-400 dark:border-sky-500',
+			'yêu_cầu_follow': 'bg-pink-100 text-pink-800 border-pink-100 dark:bg-gray-700 dark:text-pink-400 dark:border-pink-500',
+			'yêu_cầu_người_bán': 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-100 dark:bg-gray-700 dark:text-fuchsia-400 dark:border-fuchsia-500',
+			'xin_hướng_dẫn': 'bg-indigo-100 text-indigo-800 border-indigo-100 dark:bg-gray-700 dark:text-indigo-400 dark:border-indigo-500',
+			'góp_ý_nội_dung': 'bg-violet-100 text-violet-800 border-violet-100 dark:bg-gray-700 dark:text-violet-400 dark:border-violet-500',
+			'hỏi_thời_gian': 'bg-amber-100 text-amber-800 border-amber-100 dark:bg-gray-700 dark:text-amber-400 dark:border-amber-500',
+			'khen': 'bg-green-100 text-green-800 border-green-100 dark:bg-gray-700 dark:text-green-400 dark:border-green-500',
+			'chê': 'bg-red-100 text-red-800 border-red-100 dark:bg-gray-700 dark:text-red-400 dark:border-red-500',
+			'report': 'bg-orange-100 text-orange-800 border-orange-100 dark:bg-gray-700 dark:text-orange-400 dark:border-orange-500',
+			'spam': 'bg-purple-100 text-purple-800 border-purple-100 dark:bg-gray-700 dark:text-purple-400 dark:border-purple-500',
+			'neutral_chat': 'bg-gray-100 text-gray-800 border-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-500'
+		};
+		
+		// Show message if no results
+		if (intents.length === 0) {
+			tableBody.innerHTML = `
+				<tr>
+					<td colspan="4" class="p-8 text-center text-gray-500 dark:text-gray-400">
+						<div class="flex flex-col items-center gap-2">
+							<svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+							</svg>
+							<p class="font-medium">No intents found</p>
+							<p class="text-sm">Try adjusting your filters</p>
+						</div>
+					</td>
+				</tr>
+			`;
+		} else {
+			tableBody.innerHTML = intents.map((item, index) => {
+				const badgeClass = badgeColors[item.meaning] || 'bg-gray-100 text-gray-800 border-gray-100';
+				const rowClass = index % 2 === 1 ? 'bg-gray-50 dark:bg-gray-700' : '';
+				
+				return `
+					<tr class="${rowClass}">
+						<td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+							<span class="font-semibold">${item.user}</span>
+						</td>
+						<td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+							${item.date}
+						</td>
+						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white">
+							<div class="font-semibold">${item.comment}</div>
+						</td>
+						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white">
+							<span class="${badgeClass} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border">${item.meaning}</span>
+						</td>
+					</tr>
+				`;
+			}).join('');
+		}
+		
+		console.log('✅ Intents table loaded successfully with filters:', selectedFilters);
+	} catch (error) {
+		console.error('❌ Error loading intents table:', error);
+	}
+}
+
+// Load intents table after page loads
+if (document.getElementById('intentsTableBody')) {
+	// Load with default filters (hỏi_giá, hỏi_mua, khen are checked by default)
+	loadIntentsTable(['hỏi_giá', 'hỏi_mua', 'khen']);
+}
+
+// Load intent filter dropdown dynamically
+async function loadIntentFilters() {
+	try {
+		const data = chartData || await loadChartData();
+		const intentCounts = data.intentCounts || {};
+		
+		const dropdownList = document.getElementById('intent-filter-list');
+		if (!dropdownList) return;
+		
+		// Define filter items with their IDs and labels - 13 loại intent
+		const filters = [
+			{ id: 'filter-hoi-gia', label: 'hỏi_giá', displayName: 'Hỏi giá', count: intentCounts['hỏi_giá'] || 0, checked: true },
+			{ id: 'filter-hoi-link', label: 'hỏi_link', displayName: 'Hỏi link', count: intentCounts['hỏi_link'] || 0, checked: false },
+			{ id: 'filter-hoi-mua', label: 'hỏi_mua', displayName: 'Hỏi mua', count: intentCounts['hỏi_mua'] || 0, checked: true },
+			{ id: 'filter-yeu-cau-follow', label: 'yêu_cầu_follow', displayName: 'Yêu cầu follow', count: intentCounts['yêu_cầu_follow'] || 0, checked: false },
+			{ id: 'filter-yeu-cau-nguoi-ban', label: 'yêu_cầu_người_bán', displayName: 'Yêu cầu người bán', count: intentCounts['yêu_cầu_người_bán'] || 0, checked: false },
+			{ id: 'filter-xin-huong-dan', label: 'xin_hướng_dẫn', displayName: 'Xin hướng dẫn', count: intentCounts['xin_hướng_dẫn'] || 0, checked: false },
+			{ id: 'filter-gop-y-noi-dung', label: 'góp_ý_nội_dung', displayName: 'Góp ý nội dung', count: intentCounts['góp_ý_nội_dung'] || 0, checked: false },
+			{ id: 'filter-hoi-thoi-gian', label: 'hỏi_thời_gian', displayName: 'Hỏi thời gian', count: intentCounts['hỏi_thời_gian'] || 0, checked: false },
+			{ id: 'filter-khen', label: 'khen', displayName: 'Khen', count: intentCounts['khen'] || 0, checked: true },
+			{ id: 'filter-che', label: 'chê', displayName: 'Chê', count: intentCounts['chê'] || 0, checked: false },
+			{ id: 'filter-report', label: 'report', displayName: 'Report', count: intentCounts['report'] || 0, checked: false },
+			{ id: 'filter-spam', label: 'spam', displayName: 'Spam', count: intentCounts['spam'] || 0, checked: false },
+			{ id: 'filter-neutral-chat', label: 'neutral_chat', displayName: 'Neutral chat', count: intentCounts['neutral_chat'] || 0, checked: false }
+		];
+		
+		// Generate HTML for filter items
+		dropdownList.innerHTML = filters.map(filter => `
+			<li class="flex items-center">
+				<input id="${filter.id}" type="checkbox" value="${filter.label}" 
+					${filter.checked ? 'checked' : ''} 
+					class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+				<label for="${filter.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+					${filter.displayName} (${filter.count})
+				</label>
+			</li>
+		`).join('');
+		
+		// Attach event listeners to checkboxes after rendering
+		setTimeout(() => {
+			attachFilterEventListeners();
+		}, 100);
+		
+		console.log('✅ Intent filters loaded successfully');
+	} catch (error) {
+		console.error('❌ Error loading intent filters:', error);
+	}
+}
+
+// Function to get selected filters from checkboxes
+function getSelectedFilters() {
+	const checkboxes = document.querySelectorAll('#intent-filter-list input[type="checkbox"]');
+	const selectedFilters = [];
+	
+	checkboxes.forEach(checkbox => {
+		if (checkbox.checked) {
+			selectedFilters.push(checkbox.value);
+		}
+	});
+	
+	return selectedFilters;
+}
+
+// Function to attach event listeners to filter checkboxes
+function attachFilterEventListeners() {
+	const checkboxes = document.querySelectorAll('#intent-filter-list input[type="checkbox"]');
+	
+	checkboxes.forEach(checkbox => {
+		checkbox.addEventListener('change', () => {
+			const selectedFilters = getSelectedFilters();
+			console.log('📊 Filters changed:', selectedFilters);
+			
+			// Reload table with selected filters
+			// If no filters selected, show all
+			loadIntentsTable(selectedFilters.length > 0 ? selectedFilters : null);
+		});
+	});
+	
+	console.log('✅ Filter event listeners attached');
+}
+
+// Load intent filters after page loads
+if (document.getElementById('intent-filter-list')) {
+	loadIntentFilters();
+}
+
+// Load total comments dynamically
+async function loadTotalComments() {
+	try {
+		const data = chartData || await loadChartData();
+		const totalComments = data.totalComments || 0;
+		
+		// Update all realtime comment badges
+		const commentBadges = document.querySelectorAll('.realtime-comments');
+		commentBadges.forEach(badge => {
+			// Format number with dot separator (e.g., 1.248)
+			const formattedNumber = totalComments.toLocaleString('de-DE');
+			badge.textContent = `Realtime • ${formattedNumber} bình luận`;
+		});
+		
+		console.log('✅ Total comments updated:', totalComments);
+	} catch (error) {
+		console.error('❌ Error loading total comments:', error);
+	}
+}
+
+// Load total comments after page loads
+if (document.querySelector('.realtime-comments')) {
+	loadTotalComments();
 }
