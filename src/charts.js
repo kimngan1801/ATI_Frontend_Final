@@ -1,5 +1,13 @@
 import ApexCharts from 'apexcharts';
 
+// Standard tooltip configuration for all charts
+const standardTooltipStyle = {
+	fontSize: '14px',
+	fontFamily: 'Inter, sans-serif'
+};
+
+const standardTooltipTheme = 'light'; // Use light theme for consistency
+
 // Fetch data from mock-data.json
 let chartData = null;
 
@@ -62,10 +70,8 @@ const getMainChartOptions = () => {
 			enabled: false
 		},
 		tooltip: {
-			style: {
-				fontSize: '14px',
-				fontFamily: 'Inter, sans-serif',
-			},
+			style: standardTooltipStyle,
+			theme: standardTooltipTheme,
 			y: {
 				formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
 					// Tính tổng của positive + negative tại điểm này
@@ -240,10 +246,8 @@ if (document.getElementById('new-products-chart')) {
 		tooltip: {
 			shared : false,
 			intersect: false,
-			style: {
-				fontSize: '14px',
-				fontFamily: 'Inter, sans-serif'
-			},
+			style: standardTooltipStyle,
+			theme: standardTooltipTheme,
 		},
 		states: {
 			hover: {
@@ -333,21 +337,18 @@ if (document.getElementById('sales-by-category')) {
 		stroke: { show: true, width: 3, colors: ['transparent'] },
 
 		tooltip: {
-			shared: false,
-			intersect: true,
-			followCursor: true,
-			marker: { show: true },
-			style: { fontSize: '15px', fontWeight: 'bold' },
+			style: standardTooltipStyle,
+			theme: standardTooltipTheme,
 			y: {
 				formatter: function(value, { seriesIndex }) {
-					const categoryName = categoryData[seriesIndex]?.name || 'Unknown';
-					return `<div class="p-2">
-							<div class="font-bold text-lg">${categoryName}</div>
-							<div class="text-sm">${value} bình luận</div>
-						</div>`;
+					return `${value} bình luận`;
+				},
+				title: {
+					formatter: function(seriesName, { seriesIndex }) {
+						return categoryData[seriesIndex]?.name || 'Unknown';
+					}
 				}
-			},
-			x: { show: false }
+			}
 		},
 
 		xaxis: { 
@@ -447,10 +448,8 @@ const getVisitorsChartOptions = () => {
 			}
 		},
 		tooltip: {
-			style: {
-				fontSize: '14px',
-				fontFamily: 'Inter, sans-serif'
-			},
+			style: standardTooltipStyle,
+			theme: standardTooltipTheme,
 		},
 	}
 }
@@ -518,10 +517,8 @@ const getSignupsChartOptions = () => {
 		tooltip: {
 			shared: true,
 			intersect: false,
-			style: {
-				fontSize: '14px',
-				fontFamily: 'Inter, sans-serif'
-			}
+			style: standardTooltipStyle,
+			theme: standardTooltipTheme,
 		},
 		states: {
 			hover: {
@@ -628,10 +625,8 @@ const getTrafficChannelsChartOptions = () => {
 			followCursor: false,
 			fillSeriesColor: false,
 			inverseOrder: true,
-			style: {
-				fontSize: '14px',
-				fontFamily: 'Inter, sans-serif'
-			},
+			style: standardTooltipStyle,
+			theme: standardTooltipTheme,
 			x: {
 				show: true,
 				formatter: function (_, { seriesIndex, w }) {
@@ -728,17 +723,9 @@ const getActionableChartOptions = () => {
 		},
 		tooltip: {
 			enabled: true,
-			theme: 'dark',
-			style: {
-				fontSize: '12px',
-				fontFamily: 'Inter, sans-serif',
-			},
-			custom: function({ series, seriesIndex, w }) {
-				return `<div class="px-3 py-2 bg-gray-900 text-white rounded-lg shadow-2xl border border-gray-700">
-							<div class="font-bold text-sm mb-1">${actionableLabels[seriesIndex]}</div>
-							<div class="text-2xl font-black">${series[seriesIndex]}%</div>
-						</div>`;
-			}
+			theme: standardTooltipTheme,
+			style: standardTooltipStyle,
+			fillSeriesColor: false,
 		},
 		responsive: [{
 			breakpoint: 640,
@@ -850,11 +837,8 @@ const getSentimentBarChartOptions = () => {
 		},
 		tooltip: {
 			enabled: true,
-			theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-			style: {
-				fontSize: '14px',
-				fontFamily: 'Inter, sans-serif',
-			},
+			theme: standardTooltipTheme,
+			style: standardTooltipStyle,
 			y: {
 				formatter: function (val) {
 					return val.toFixed(1) + '%';
@@ -1045,6 +1029,9 @@ async function loadIntentsTable(selectedFilters = null) {
 		// Filter intents if selectedFilters is provided
 		if (selectedFilters && selectedFilters.length > 0) {
 			intents = intents.filter(item => selectedFilters.includes(item.meaning));
+		} else {
+			// If no filter, limit to 20 comments
+			intents = intents.slice(0, 20);
 		}
 		
 		// Badge color mapping - 13 loại intent
@@ -1086,16 +1073,16 @@ async function loadIntentsTable(selectedFilters = null) {
 				
 				return `
 					<tr class="${rowClass}">
-						<td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white" style="width: 15%;">
 							<span class="font-semibold">${item.user}</span>
 						</td>
-						<td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+						<td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400" style="width: 15%;">
 							${item.date}
 						</td>
-						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white">
-							<div class="font-semibold">${item.comment}</div>
+						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white" style="width: 50%;">
+							<div class="font-semibold break-words">${item.comment}</div>
 						</td>
-						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white">
+						<td class="p-4 text-sm font-normal text-gray-900 dark:text-white" style="width: 20%;">
 							<span class="${badgeClass} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border">${item.meaning}</span>
 						</td>
 					</tr>
@@ -1111,8 +1098,8 @@ async function loadIntentsTable(selectedFilters = null) {
 
 // Load intents table after page loads
 if (document.getElementById('intentsTableBody')) {
-	// Load with default filters (hỏi_giá, hỏi_mua, khen are checked by default)
-	loadIntentsTable(['hỏi_giá', 'hỏi_mua', 'khen']);
+	// Load without any filters - show all comments initially
+	loadIntentsTable(null);
 }
 
 // Load intent filter dropdown dynamically
@@ -1125,16 +1112,17 @@ async function loadIntentFilters() {
 		if (!dropdownList) return;
 		
 		// Define filter items with their IDs and labels - 13 loại intent
+		// All unchecked by default - user must click to filter
 		const filters = [
-			{ id: 'filter-hoi-gia', label: 'hỏi_giá', displayName: 'Hỏi giá', count: intentCounts['hỏi_giá'] || 0, checked: true },
+			{ id: 'filter-hoi-gia', label: 'hỏi_giá', displayName: 'Hỏi giá', count: intentCounts['hỏi_giá'] || 0, checked: false },
 			{ id: 'filter-hoi-link', label: 'hỏi_link', displayName: 'Hỏi link', count: intentCounts['hỏi_link'] || 0, checked: false },
-			{ id: 'filter-hoi-mua', label: 'hỏi_mua', displayName: 'Hỏi mua', count: intentCounts['hỏi_mua'] || 0, checked: true },
+			{ id: 'filter-hoi-mua', label: 'hỏi_mua', displayName: 'Hỏi mua', count: intentCounts['hỏi_mua'] || 0, checked: false },
 			{ id: 'filter-yeu-cau-follow', label: 'yêu_cầu_follow', displayName: 'Yêu cầu follow', count: intentCounts['yêu_cầu_follow'] || 0, checked: false },
 			{ id: 'filter-yeu-cau-nguoi-ban', label: 'yêu_cầu_người_bán', displayName: 'Yêu cầu người bán', count: intentCounts['yêu_cầu_người_bán'] || 0, checked: false },
 			{ id: 'filter-xin-huong-dan', label: 'xin_hướng_dẫn', displayName: 'Xin hướng dẫn', count: intentCounts['xin_hướng_dẫn'] || 0, checked: false },
 			{ id: 'filter-gop-y-noi-dung', label: 'góp_ý_nội_dung', displayName: 'Góp ý nội dung', count: intentCounts['góp_ý_nội_dung'] || 0, checked: false },
 			{ id: 'filter-hoi-thoi-gian', label: 'hỏi_thời_gian', displayName: 'Hỏi thời gian', count: intentCounts['hỏi_thời_gian'] || 0, checked: false },
-			{ id: 'filter-khen', label: 'khen', displayName: 'Khen', count: intentCounts['khen'] || 0, checked: true },
+			{ id: 'filter-khen', label: 'khen', displayName: 'Khen', count: intentCounts['khen'] || 0, checked: false },
 			{ id: 'filter-che', label: 'chê', displayName: 'Chê', count: intentCounts['chê'] || 0, checked: false },
 			{ id: 'filter-report', label: 'report', displayName: 'Report', count: intentCounts['report'] || 0, checked: false },
 			{ id: 'filter-spam', label: 'spam', displayName: 'Spam', count: intentCounts['spam'] || 0, checked: false },
@@ -1148,7 +1136,7 @@ async function loadIntentFilters() {
 					${filter.checked ? 'checked' : ''} 
 					class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
 				<label for="${filter.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-					${filter.displayName} (${filter.count})
+					${filter.displayName}
 				</label>
 			</li>
 		`).join('');
@@ -1183,7 +1171,16 @@ function attachFilterEventListeners() {
 	const checkboxes = document.querySelectorAll('#intent-filter-list input[type="checkbox"]');
 	
 	checkboxes.forEach(checkbox => {
-		checkbox.addEventListener('change', () => {
+		checkbox.addEventListener('change', (e) => {
+			// If this checkbox is checked, uncheck all others (single choice)
+			if (e.target.checked) {
+				checkboxes.forEach(cb => {
+					if (cb !== e.target) {
+						cb.checked = false;
+					}
+				});
+			}
+			
 			const selectedFilters = getSelectedFilters();
 			console.log('📊 Filters changed:', selectedFilters);
 			
