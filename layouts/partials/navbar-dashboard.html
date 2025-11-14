@@ -39,8 +39,8 @@
               <!-- User dropdown menu -->
               <div class="z-50 hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700" id="user-dropdown">
                 <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white" id="user-name">Kim Ngan</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="user-email">kim.ngan@example.com</p>
+                  <p class="text-sm font-medium text-gray-900 dark:text-white" id="user-name"></p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="user-email"></p>
                 </div>
                 <div class="py-1">
                   <button onclick="handleLogout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
@@ -49,10 +49,40 @@
                 </div>
               </div>
               <script>
+                // Hàm xử lý đăng xuất
+                function handleLogout() {
+                  // Xóa dữ liệu người dùng
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('currentUser');
+                  localStorage.removeItem('rememberMe');
+                  
+                  // Chuyển người dùng về trang gốc
+                  window.location.href = '/';
+                }
+
                 // Custom dropdown toggle
                 document.addEventListener('DOMContentLoaded', function() {
                   const button = document.getElementById('user-menu-button-2');
                   const dropdown = document.getElementById('user-dropdown');
+                  
+                  // Hiển thị thông tin user từ localStorage
+                  const currentUserData = localStorage.getItem('currentUser');
+                  if (currentUserData) {
+                    try {
+                      const user = JSON.parse(currentUserData);
+                      const userNameElement = document.getElementById('user-name');
+                      const userEmailElement = document.getElementById('user-email');
+                      
+                      if (userNameElement && user.name) {
+                        userNameElement.textContent = user.name;
+                      }
+                      if (userEmailElement && user.email) {
+                        userEmailElement.textContent = user.email;
+                      }
+                    } catch (error) {
+                      console.error('Lỗi khi parse user data:', error);
+                    }
+                  }
                   
                   if (button && dropdown) {
                     button.addEventListener('click', function(e) {
