@@ -1,9 +1,12 @@
 languageCode:           "en"
 title:                  "AnglerData"
-# Force local absolute URLs during builds
-baseURL:                "http://localhost:1313/"
+# For GitHub Pages: use your repo name
+# For custom domain: use your domain
+# For local dev: use http://localhost:1313/
+baseURL:                "/"
 enableInlineShortcodes: true
 canonifyURLs: true
+relativeURLs: true
 
 params:
   description: "AnglerData - Professional Data Analytics Dashboard"
